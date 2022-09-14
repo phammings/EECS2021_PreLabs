@@ -1,0 +1,11 @@
+;Use lui and addi to store 8000 in x6 and calc -8000+10
+
+lui	x6, 2
+;or lui x6, 8000 >> 12
+addi	x6, x6, -192		;obtain 8000
+
+addi	x29, x0, -1		;negate x6 to -8000
+xor	    x6, x29, x6
+addi	x6, x6, 1
+
+addi	x5, x6, 10		;-8000 + 10 for ans

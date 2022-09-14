@@ -1,0 +1,4 @@
+b20: 	EQU 	6146 >> 12		;extract most sig. 20 bit (first 20 bits from left)
+b12: 	EQU 	6146 & 0xfff		;extract least sig. 12 bit (last 12 bits from right)
+                                ;b12 is 0x00..802, b20 is 0x00..1
+                                ;so 6146 equal to 0x1802

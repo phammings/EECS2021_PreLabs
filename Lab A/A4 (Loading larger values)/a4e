@@ -1,0 +1,10 @@
+;b20: 	EQU 	6146 >> 12		extract most sig. 20 bit value of 1 in 0000 0000 0000 0000 0001
+;b12: 	EQU 	6146 & 0xfff		extract least sig. 12 bit of 2050 or -2046 in 1000 0000 0010
+
+;6146 + 3
+
+;lui 	x6, 1               value 4096
+;addi 	x6, x6, 0x802		incorrect as 0x802 can be 2050 or -2046, risc-v takes -2046
+;addi 	x7, x0, 3		    + 3
+;add 	x5, x6, x7
+

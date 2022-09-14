@@ -1,0 +1,6 @@
+;subtract 11 from 6 in two lines with addi and sub or 6-11
+
+addi 	x6, x0, 6	
+addi	x7, x0, 11	
+sub	x5, x6, x7	;6-11 => x5
+

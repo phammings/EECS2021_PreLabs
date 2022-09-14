@@ -1,0 +1,7 @@
+;88 / 8
+;srli shifts right logical immediate division for power of 2
+
+addi x6, x0, 88
+srli x5, x6, 3	;2^3 = 8 -> 88/8 = 11
+
+

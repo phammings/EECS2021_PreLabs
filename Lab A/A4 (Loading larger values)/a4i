@@ -1,0 +1,9 @@
+;to load 64 bit, we must split into two 32 bit and then combine
+
+c: 	EQU 	0x1234567811223344					
+	lui 	x6, (c & 0xffffffff) >> 12			;obtains 0x11223344 but too big so >> 12 makes it 0x11223000
+	addi 	x6, x6, c & 0xfff					;addings the 12 LSB of 0x344 to become 0x11223344
+	lui 	x7, c >> 44							;obtains 0x12345000
+	addi 	x7, x7, (c & 0xfff00000000) >> 32	;adds the 678 to 0x12345678
+	slli 	x7, x7, 32							;shifts left so MSB so you can combine into 64bit
+	or 	x5, x6, x7

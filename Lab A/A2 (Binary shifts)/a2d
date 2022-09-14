@@ -1,0 +1,12 @@
+;-88 / 8
+
+;addi x6, x0, -88
+;srli x5, x6, 3	
+
+;0 bits fed into MSB of number during shirt makes it wrong
+;must be -11 with 1 as MSB
+;using srai shift right arithemetic immediate fixes:
+
+addi x6, x0, -88
+srai x5, x6, 3
+

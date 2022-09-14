@@ -1,0 +1,9 @@
+;adds to 4098
+
+lui	x6, 1		;0x1000 stores MSB
+addi	x6, x6, 2		;0x1002
+
+;4098 = 4096+2 = (4096×1) +(256×0) + (16×0) + (1×2) = 0x1002
+;32 bit binary: 0000 0000 0000 0000 0001 0000 0000 0010
+;MSB first 20 bits: 0000 0000 0000 0000 0001 represent the value of 1 in 0x1002
+;LSB last 12 bits: 0000 0000 0010 rep. value of 2 

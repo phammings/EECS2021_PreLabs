@@ -1,0 +1,4 @@
+; store  0xffffffff00000000 in x5 using only addi and slli
+
+addi	x6, x0, 0xfff
+slli	x5, x6, 32		;8 zeros, shift 8 times so 4x8=32	

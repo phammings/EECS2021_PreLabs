@@ -1,0 +1,12 @@
+;lui 	x6, 2		adding 1 to x5 so 12 but immd value is unsigned int
+;addi 	x6, x6, 0x802
+;addi 	x7, x0, 3
+;add 	x5, x6, x7
+
+;which is:
+b20: 	EQU 	6146 >> 12		;same as 0x00..1
+b12: 	EQU 	6146 & 0xfff	;same as 0x00..802
+	lui 	x6, b20 + 1			;0x1 + 1 = 2 like from above
+	addi 	x6, x6, b12			;adding twice of the value of 1 to 0x802
+	addi 	x7, x0, 3			;adding 3 and getting ans
+	add 	x5, x6, x7

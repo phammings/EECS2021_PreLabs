@@ -1,0 +1,6 @@
+addi	x6, x0, 0x123   ;100100011
+andi	x7, x6, 0x0f0   ; 11110000
+srli	x5, x7, 4       ;000100000 after ANDI operation
+                        ;0x0f0 f in 2nd place takes 2nd bit of 2 in 0x123 so now 0x020 = 32 decimal
+                        ;which is 20 in hexdecimal shifting 4 bits = 2
+                        ;extracted bits [7:4] in 0x123 which is 0010 or 4

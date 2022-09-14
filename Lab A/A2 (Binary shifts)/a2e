@@ -1,0 +1,11 @@
+;-88 / 8
+
+addi x6, x0, 0x123 ;(3x1) + (2x16) + (1x16x16) = 291
+slli x7, x6, 56			;move 4 bits of interest to MSB [63:60]
+srli x5, x7, 60
+			;move 4 bits of interest to LSB [3:0]
+
+;addi 	x6, x0, 0x123
+;slli 	x7, x6, 56		<-- becomes 0x23000....
+;srli 	x5, x7, 60		--> becomes 0x00......2
+ 

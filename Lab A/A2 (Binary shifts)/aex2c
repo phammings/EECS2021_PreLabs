@@ -1,0 +1,8 @@
+; store 0x0000123400000000 in x5 using only addi and slli
+
+addi	x6, x0, 1		;add 1 to register (now 0x1)
+slli	x6, x6, 12		;add 1 and shift left 3 times (0x1000)
+
+addi	x6, x6, 0x234		;add 234 to register (now 0x1234)
+slli	x5, x6, 32		;8 zeros so shift 8 times to left
+			;8 x 4 = 32

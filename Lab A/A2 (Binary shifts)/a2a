@@ -1,0 +1,11 @@
+;17 x 8 by int value power of 2
+;slli shift left logical immediate
+
+addi	x6, x0, 17	
+slli	x5, x6, 2	;slli immd value of 2 shifts x6's bits twice so multuply by 4
+			;feeding zeros to LSB
+			;each 1-bit shift to left multplies by 2
+			; so 2 produce 2 shifts to multuply by 4
+			;so 2^2 = 4 -> 17x4 
+
+
