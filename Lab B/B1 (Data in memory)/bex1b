@@ -1,0 +1,17 @@
+;Store  0x2222333344445555 and 0x1111222233334444 at addresses 0x1000100010001000 and 0x1000100010001100
+;respectively. Then load in x6 and x7 and calculate sum, difference, or and xor of the 2 values
+;storing results in regs x28-x31.
+
+a: 	DD 	b			
+	ORG 	0x1000100010001000			
+b: 	DD 	0x2222333344445555			
+
+c: 	DD 	d			
+	ORG 	0x1000100010001100		
+d: 	DD 	0x1111222233334444
+
+	ld 	x6, a(x0)		
+	ld 	x6, 0(x6)		
+
+	ld	x7, c(x0)		;;ERROR wrong # args
+	ld	x7, 0(x7)

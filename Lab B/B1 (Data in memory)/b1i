@@ -1,0 +1,7 @@
+a: 	DD 	c			;;value of address
+	ORG 	0x1000000000000000			;;address
+c: 	DD 	0x1234567811223344
+	ld 	x6, a(x0)		;; loads ORG address
+	ld 	x5, 0(x6)		;; loads DD value 0x1234...
+
+; another apporach is this to store large address in memory

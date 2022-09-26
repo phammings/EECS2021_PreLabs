@@ -1,0 +1,6 @@
+c: 	DM 	1
+	addi 	x5, x0, 0x123
+	sd 	x5, c(x0)		;; stores value to memory of address c:
+				;; storage space of 1 double-word in DM
+
+;; value of START label is 8, points to address of first excutable instruction of addi

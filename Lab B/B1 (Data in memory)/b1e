@@ -1,0 +1,8 @@
+;sd	x0, 0(x0)
+;sd	x0, 4(x0)
+
+sd	x0, 8(x0)
+
+;; save memory address from 0 to 4
+;; error cause attempted to write 8byte word at address 4
+;; which is nit divisible by 8.

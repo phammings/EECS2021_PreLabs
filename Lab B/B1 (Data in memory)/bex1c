@@ -1,0 +1,29 @@
+;Store 0xAAAABBBBCCCCDDDD and 0x4444333322221111 at addresses 0 and 8 respectively
+;Calculate the sum of the above values and store the result in a double word
+;starting at address 16
+
+
+a: 	DD 0xAAAABBBBCCCCDDDD
+b: 	DD 0x4444333322221111
+
+d: 	DM 8		;;Initializes 8 empty memory addresses
+
+ld 	x5, a(x0)
+ld 	x6, b(x0) 
+
+
+	add 	x8, x5, x6 		; a+b
+	sub 	x9, a5, x6 		; a-b 
+	sub 	x10, x6, x5 		; b-a
+	and 	x11, x5, x6 		; a AND b 
+	or 	x12, x5, x6 		; a OR b 
+	xor 	x13, x5, x6 		; a XOR b
+	xori 	x14, x5, -1
+	xori 	x15, x6, -1 		; not b 
+
+	sd 	x8, d(x0)
+	sd 	x9, d+8(x0)
+	sd	x10, d+16(x0)		;and on...
+
+	
+

@@ -1,0 +1,22 @@
+; Instruct assembler to store 1024, 2048, 4096, 8192 in beggining of memory
+; with DD assembler, sum them and find avg and store in memory.
+
+c:	DD	1024, 2048, 4096, 8192
+a:	DM	1
+	
+	ld	t0, c(x0)
+	ld	t1, c+8(x0)
+	ld	t2, c+16(x0)
+	ld	t3, c+24(x0)
+
+	add	t4, t0, t1
+	add	t4, t2, t3
+
+	srli	t5, t4, 2
+
+	sd	t5, a(t5)		;;store with DM
+	;sd	t5, 8(t5)		;;store without DM
+ 
+
+	
+

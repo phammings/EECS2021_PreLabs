@@ -1,0 +1,11 @@
+;ABS value of int by check if neg, then negate bits
+
+src: 	DD 	-3		;define 3 in memory
+	ld 	x5, src(x0)		;loads value of 3
+	bge 	x5, x0, skip		;branch if greater than 0
+	sub 	x5, x0, x5		;otherwise, negate bit
+skip: 	sd 	x5, dst(x0)		;save value in memory
+	ebreak 	x0, x0, 0
+dst: 	DM 	1
+
+;takes int value from mem addr 0, calc abs value and store in memory

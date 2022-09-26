@@ -1,0 +1,6 @@
+	ORG 	0x10000000
+c: 	DD 	0x1234567811223344
+	ld 	x5, c(x0)
+
+; error because larger addresses require more than 12 bits
+; should be loaded in registers

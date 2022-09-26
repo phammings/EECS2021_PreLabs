@@ -1,0 +1,62 @@
+dir: 
+	DC 	"John"
+	DC 	"11111"
+	DC 	"Nick"
+	DC 	"22222"
+	DC 	"Sara"
+	DC 	"11111"
+	DC 	"Nick"
+	DC 	"33333"
+	DD 	0
+	DD	0		;;need extra zero because increment by 16, so dont want null
+
+
+
+s1: 	DC "Enter a phone or a name\nto search for:" ;-----main message
+
+	add 	x9,x0,x0 ;Need a counter to search through the name variables
+	addi	x7, x0, 8	;counter for number vars
+
+	addi 	x30,x0,s1 ;----loading the string
+
+loop: 	ecall 	x0,x30,4 ;---Output the main message
+	ecall 	x6,x0,8 ;---Recieveing the number or name
+	beq 	x0,x0,search ;going to the searcher loop next
+
+
+search: ld 		x10,dir(x9) ;--starting to load things into the base of the dir
+      	beq 	x10,x0,searchNum ;---if we load a 0 end search for names, start search for nums
+      	beq 	x6,x10,finisher ;---if we find what we are looking for go to finisher
+	addi 	x9,x9,16		;increment counter
+      	beq 	x0,x0,search		;branch back to search until match or no match
+
+searchNum:
+	ld 	x11,dir(x7) 		;loading elements of array that are nums
+      	beq 	x11,x0,reset 		;reset if element is 0 (finish searching thru array)
+      	beq 	x6,x11,finisher2 	;if equal in input, branch to finisher2
+      	addi 	x7,x7,16		;increment counter
+      	beq 	x0,x0,searchNum	;go back to searchNum until match or no match
+
+finisher: addi	 x9, x9, 8 			;increment counter to get number of name
+	  ld 	x12, dir(x9)		;load name
+	  addi	x1, x9, -8		;addr for number
+	  ld	x13, dir(x1)		;load number
+	  ecall	x13, x13, 3		;output name and number
+	  ecall x12, x12, 3	
+	  beq 	x10, x0, reset		;if it loads a zero, reset
+	  addi	x9, x9, 8		;increment counter by 8 to continue search for another name match
+	  beq	x0, x0, search		;back to search for another potential match
+
+finisher2:addi	 x7,x7,-8 			;similar logic as finisher branch
+	  ld 	x14, dir(x7)
+	  addi	x2, x7, 8
+	  ld	x15, dir(x2)
+	  ecall x14, x14, 3
+	  ecall	x15, x15, 3
+	  beq 	x11, x0, reset		;if it load a zero, reset
+	  addi	x7, x7, 24		;right now counter at name before current num (i.e. current = 11111, addr now at John)
+	  beq 	x0,x0,searchNum	;so start search right after current num which is 3 x 8bit addresses away (i.e. move from John 3 addr down to 22222)
+
+reset: 	add 	x9,x0,x0		;reset values
+	addi	x7, x0, 8
+       	beq 	x0,x0,loop
