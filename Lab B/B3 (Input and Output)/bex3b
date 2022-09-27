@@ -13,6 +13,6 @@ loop:	ecall 	x0,x30,4 		;output "Enter an ineger..."
 	ecall 	x6, x28,5 		;integer
 	ecall 	x0,x31,4 		;output "enter a memory adress"
 	ecall 	x7,x29,5 		;adress
-	addi 	x7,x7,-24
+	addi 	x7,x7,-24		;we saved 3 strings in memory alredy, so we must skip those three, by doing -24 (3x8) when placing input int
 	sd 	x6,c(x7)
 	beq	x0, x0, loop
