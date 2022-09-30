@@ -44,4 +44,16 @@ out:	fadd.d	f4, f9, f2		;guess = (high + low) / 2.0
 
 end:	ecall	x0, f4, 1 
 	ebreak	x0, x0, 0
+
+;Pseudo code of above:
+;error = 0.000001
+;low = 0
+;high = square (or input)
+;guess = (high + low) / 2.0
+;while (abs(guess^2 - square) >= error)
+;	if (guess^2 < square)
+;		low = guess
+;	else
+;		high = guess
+;guess = (high + low) / 2.0
 	
