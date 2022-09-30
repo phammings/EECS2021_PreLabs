@@ -1,0 +1,47 @@
+s1: 	DC 	"Enter x:\0"
+s2: 	DC 	"Result:\0"
+d1:	DF	0.000001		;precision value
+d2:	DF	0.0
+d3:	DF	2.0
+
+	addi 	x5, x0, s1
+	ecall 	x1, x5, 4 
+	ecall 	f0, x0, 6 		;square/input
+	fmv.x.d x10, f0
+	
+	fld	f1, d1(x0)		;error
+	fld	f2, d2(x0)		;low
+	fld	f3, d3(x0)		;value 2.0
+	fld	f10, d2(x0)		;value 0.0
+	
+	fadd.d	f4, f2, f0		;guess = (high + low) / 2.0
+	fdiv.d	f4, f4, f3
+
+	fadd.d	f9, f9, f0		;high = square
+
+while:	fmul.d	f6, f4, f4		;guess^2
+	fmv.x.d x31, f6
+	blt	x31, x10, abs
+	fsub.d	f7, f6, f0		;guess^2 - square
+cont:	fmv.x.d x6, f6
+	fmv.x.d x7, f7
+	fmv.x.d	x1, f1
+	bge	x7, x1, if
+	blt	x7, x1, end
+
+abs:	fsub.d	f7, f0, f6		;-(guess^2) + square ->	abs value
+	beq	x0, x0, cont
+
+if:	bge	x6, x10, else
+	fadd.d	f2, f10, f4
+	beq	x0, x0, out
+
+else:	fadd.d	f9, f10, f4
+
+out:	fadd.d	f4, f9, f2		;guess = (high + low) / 2.0
+	fdiv.d	f4, f4, f3
+	beq	x0, x0, while
+
+end:	ecall	x0, f4, 1 
+	ebreak	x0, x0, 0
+	
