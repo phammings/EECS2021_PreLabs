@@ -1,8 +1,30 @@
+;static int fib(int n, int a, int b ) 
+;    {  
+;          
+;        if (n == 0) 
+;            return a; 
+;        if (n == 1) 
+;            return b; 
+;        return fib(n - 1, b, a + b); 
+;   } 	
+
+str:	DC	"th fib number is: "
+str2:	DC	"Input nth num in fib sequence: "
 	addi 	sp, x0, 0 		;sp initialization
-	addi	a1, x0, 0		;accumulator
+	addi	a1, x0, 0		;int a
+	addi	a2, x0, 1		;int b
 	addi 	x6, x0, 1 		;const 1
-	addi 	a0, x0, 4 		;n=5
+	;addi 	a0, x0, 7 		;n=4
+	
+	addi	t4, x0, str2
+	ecall	t4, t4, 4
+	ecall 	a0, a0, 5 		;n in fib(n)
+
+	ecall	t3, a0, 0
+	addi	t2, x0, str
+	ecall	t3, t2, 4
 	jal 	x1, fib 		;call fib
+	ecall	t3, a2, 0
 	ebreak 	x0, x0, 0
 
 fib: 	blt 	x6, a0, recu 		;if(1<a0)recursion
@@ -14,17 +36,14 @@ ret1: 	addi 	a0, x0, 1 		;if(a0<=)return 0
 
 ret0: 	jalr 	x0, 0(x1) 		;return
 
-recu: 	addi 	sp, sp, -16 		;adjust sp (by 24 instead of 16)
-	sd 	x1, 8(sp) 		;push ra
-	;sd	a0, 8(sp)		;push a0
+recu: 	addi 	sp, sp, -24 		;adjust sp 
+	sd 	x1, 16(sp) 		;push ra
 	addi 	a0, a0, -1 		;a0=a0-1
+	add	t0, x0, a2		;store int b into t0
+	add	a2, a1, a2		;int b = a+b
+	add	a1, x0, t0		;int a = b
 	jal 	x1, fib 		;recursive call
-	;sd 	a0, 0(sp) 		;push a0
-	;ld 	a0, 8(sp) 		;pop old a0
-	addi 	a0, a0, -2 		;a0=a0-2
-	jal 	x1, fib 		;recursive call
-	;ld 	x5, 0(sp) 		;pop old a0
-	add 	a0, x5, a0 		;fib(a0)=fib(a0-1)+fib(a0-2)
-	ld 	x1, 8(sp) 		;pop ra
-	addi 	sp, sp, 16 		;adjust sp
+	;add 	a0, x5, a0 		;fib(a0)=fib(a0-1)+fib(a0-2)
+	ld 	x1, 16(sp) 		;pop ra
+	addi 	sp, sp, 24 		;adjust sp
 	jalr 	x0, 0(x1) 		;return
