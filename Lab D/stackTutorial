@@ -1,0 +1,14 @@
+STACK: 	EQU 	0x100000
+
+	lui 	sp, STACK>>12
+
+	addi 	x5, x0, 1		;pushing value 1 into stack
+	sd 	x5, 0(sp)
+	addi 	sp, sp, -8
+
+	addi 	x5, x0, 2		;push value 2 into stack
+	sd 	x5, 0(sp)
+	addi 	sp, sp, -8
+
+	addi 	sp, sp, 8		;poppping top of stack
+	ld 	x5, 0(sp)

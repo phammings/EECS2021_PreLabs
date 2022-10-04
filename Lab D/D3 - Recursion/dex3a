@@ -1,0 +1,32 @@
+inA: 	DC 	"Enter X:\0"
+inB: 	DC 	"Enter Y:\0"
+
+	addi 	t0, x0, inA
+	addi 	t1, x0, inB
+	addi	sp, x0, 0		;sp initialization
+
+	ecall 	x1, t0, 4
+	ecall 	a1, x0, 5 		;X value
+	ecall 	x1, t1, 4
+	ecall 	a2, x0, 5 		;Y value
+	jal	x1, gcd
+	ebreak	x0, x0, 0
+
+gcd:	blt	x0, a2, recu		;if(a0>0) do recursion
+	beq	a2, x0, outGcd		;if(y=0) return base case
+back:	jalr	x0, 0(x1)
+
+recu:	sd	x1, -8(sp)
+	addi	sp, sp, -8
+	add	t3, x0, a1		;put a2 into t3 for temp use
+	add	a1, x0, a2
+	beq	a1, x0, outGcd
+	rem 	a2, t3, a2		;x%y
+	jal	x1, gcd
+	addi	sp, sp, 8
+	ld	x1, -8(sp)
+	jalr 	x0,0(x1)
+
+outGcd:	ecall 	x0, a1, 0		;output GCDs
+	beq	x0, x0, back
+

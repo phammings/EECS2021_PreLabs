@@ -1,0 +1,35 @@
+str1: 	DC 	"sampled text\0"
+STACK: 	EQU 	0x100000 		;stack
+	lui 	sp, STACK>>12
+	addi 	a2, x0, str1+6 	;chaddr		6 to keep 'sample'
+	addi 	a3, x0, 6 		;#ch	delete 6 chars
+	jal 	x1, delch
+	addi 	x6, x0, str1 		;output
+	ecall 	x0, x6, 4
+	ebreak 	x0, x0, 0 		;finish
+
+delch: 	sd 	x1, 0(sp)
+	addi 	s0, a2, 0
+	addi 	s1, a3, 0
+	bge 	x0, s1, end2
+loop2: 	jal 	x1, delch1		;return will come here
+
+	addi 	a2, s0, 0
+	addi 	s1, s1, -1
+	bne 	s1, x0, loop2
+end2: 	ld 	x1, 0(sp) ;pop
+	jalr 	x0, 0(x1) ;return
+	
+
+end1: 	jalr 	x0, 0(x1) ;return
+
+delch1: lb x5, 0(a2)
+	ecall	x0, x5, 3
+loop1: 	beq x5, x0, end1
+	lb 	x5, 1(a2)
+	sb 	x5, 0(a2)		;shift letter left
+	addi 	a2, a2, 1		;increment to next letter
+	addi 	x6, x0, str1 		;output
+	ecall 	x0, x6, 4
+	
+	jal 	x0, loop1
