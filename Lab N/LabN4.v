@@ -44,6 +44,7 @@ module labM;
     or or1 (z1, z2[1], z2[0]);
     not zero_not(exp_zero, z1);
 
+    //CPU now able to execute program without any external module help!
     initial
     begin
         //------------------------------------Entry point

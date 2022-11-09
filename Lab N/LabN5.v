@@ -4,6 +4,7 @@ module labM;
     wire [31:0] ins, rd2, wb;
     yChip myChip(ins, rd2, wb, entryPoint, INT, clk);
     
+    //Only need to have clock changes here! Everything runs now from our yChip.v and cpu.v!!!
     initial
     begin
         //------------------------------------Entry point

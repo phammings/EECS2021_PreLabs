@@ -56,7 +56,7 @@ module labN;
                     op = 3'b001;
                 // NOTE: funct3 111 is never encountered in this prelab exercise
             end
-            else if (ins[6:0] == 7'h6F) // UJ-type jal
+            else if (ins[6:0] == 7'h6F) // UJ-type jal  jump instr now identified
             begin
                 // $display("jal UJ-type");
                 RegWrite = 1;
@@ -93,7 +93,7 @@ module labN;
                 MemWrite = 1;
                 // Mem2Reg is don't care
             end
-            else if (ins[6:0] == 7'h63) // SB-Type beq
+            else if (ins[6:0] == 7'h63) // SB-Type beq      branch instr. now identified
             begin
                 // $display("beq SB-Type");
                 ALUSrc = 0;

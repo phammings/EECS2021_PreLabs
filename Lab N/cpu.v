@@ -194,6 +194,10 @@ module yWB(wb, exeOut, memOut, Mem2Reg);
     yMux #(32) writeback(wb, exeOut, memOut, Mem2Reg);
 endmodule
 module yPC(PCin, PC, PCp4,INT,entryPoint,branchImm,jImm,zero,isbranch,isjump);
+
+    //jump and branch inputs are simply flags set to 1 if current instr. is jump or branch
+    //if PCin is output of yIF circuit, then we to force CPU to stop current program and switch to fetch very first instr.
+
     output [31:0] PCin;
 
     input [31:0] PC, PCp4, entryPoint, branchImm;
@@ -221,14 +225,17 @@ module yPC(PCin, PC, PCp4,INT,entryPoint,branchImm,jImm,zero,isbranch,isjump);
 
     // deciding to do branch
     and decide_do(doBranch, isbranch, zero);
-    yMux #(32) mux1(choiceA, PCp4, bTarget, doBranch);
-    yMux #(32) mux2(choiceB, choiceA, jImmX4PPCp4, isjump);
-    yMux #(32) mux3(PCin, choiceB, entryPoint, INT);
+    yMux #(32) mux1(choiceA, PCp4, bTarget, doBranch);          //first mux chooses PCp4 (seq. processing) and branching with ctrl = branch && zero (i.e. beq instr. and regs are equal)
+                                                                //branch target addr is bTarget computed by multiplying imm by 4 and adding to PCp4
+    yMux #(32) mux2(choiceB, choiceA, jImmX4PPCp4, isjump);     //second mux chooses between prev. mux output and jumping. ctrl = isJump calculated from shift left twice of jImm
+    yMux #(32) mux3(PCin, choiceB, entryPoint, INT);            //third mux chooses between previous mux output and entryPoint. ctrl = INT
 endmodule
 module yC1(isStype, isRtype, isItype, isLw, isjump, isbranch, opCode);
     output isStype, isRtype, isItype, isLw, isjump, isbranch;
     input [6:0] opCode;
     wire lwor, ISselect, JBselect, sbz, sz;
+
+    //yC1 determines if instr. is load, store, beq, jal, or R-type:
 
     // opCode
     //         6543210
@@ -241,10 +248,11 @@ module yC1(isStype, isRtype, isItype, isLw, isjump, isbranch, opCode);
     // S-Type  0100011
 
     // Detect UJ-type
-    assign isjump= opCode[3];
+    assign isjump= opCode[3];       //jump is only when opCode[3] is 1 - distinguisher!, since other instr. has zeros there!
 
     // Detect lw
-    or lw_detect(lwor, opCode[6], opCode[5], opCode[4], opCode[3], opCode[2]); not (isLw, lwor);
+    or lw_detect(lwor, opCode[6], opCode[5], opCode[4], opCode[3], opCode[2]);      //should be all zeros since lw = 0000011 
+    not (isLw, lwor);
 
     // Select between S-Type and I-Type
     xor s_i_xor(ISselect, opCode[6], opCode[3], opCode[2], opCode[1], opCode[0]);
@@ -262,6 +270,8 @@ endmodule
 module yC2(RegWrite, ALUSrc, MemRead, MemWrite, Mem2Reg, isStype, isRtype, isItype, isLw, isjump, isbranch);
     output RegWrite, ALUSrc, MemRead, MemWrite, Mem2Reg;
     input isStype, isRtype, isItype, isLw, isjump, isbranch;
+
+    //automating assignments based on opCode...
 
     // You need two or gates and 3 assignments;
 
@@ -281,6 +291,11 @@ module yC2(RegWrite, ALUSrc, MemRead, MemWrite, Mem2Reg, isStype, isRtype, isIty
     assign MemWrite = isStype;
 endmodule
 module yC3(ALUop, isRtype, isbranch);
+    //yC3 and yC4 generates the opCode to fully automate the control settings!
+    //yC3 responsible for non-R-type instr since it doesn't see funct3, only opCode
+    //so jal doesn't involve the ALU
+
+
     output [1:0] ALUop;
     input isRtype, isbranch;
     // build the circuit
@@ -290,6 +305,11 @@ module yC3(ALUop, isRtype, isbranch);
     assign ALUop[0] = isbranch;
 endmodule
 module yC4(op, ALUop, funct3);
+    //yC4 takes care of R-types!
+    //yC4 doesn't see opCode only sees funct3
+    //sees ALUop signal by yC3 and outputs 3-bit ALU signal op - ALU CONTROL UNIT
+    //following code ignores if funct is 00 or 01, only operates when its 10 as per diagram
+
     output [2:0] op;
     input [2:0] funct3;
     input [1:0] ALUop;
@@ -298,12 +318,11 @@ module yC4(op, ALUop, funct3);
     // use the circuit diagram with 5 gates
 
     // bit 2
-    xor f21 (f21out, funct3[2], funct3[1]); // lmfao I can't read, i really said this was nor at first
+    xor f21 (f21out, funct3[2], funct3[1]); 
     and upperAnd(upperAndOut, ALUop[1], f21out);
     or upperOr(op[2], ALUop[0], upperAndOut);
 
     // bit 1
-    // lol I misread the circuit diagram at first, didn't realize I needed to not the inputs
     not ALUop1no(notALU, ALUop[1]);
     not f3no(notf3, funct3[1]);
     or lowerOr(op[1], notALU, notf3);
@@ -314,7 +333,9 @@ module yC4(op, ALUop, funct3);
 
 endmodule
 module yChip(ins, rd2, wb, entryPoint, INT, clk);
-    output [31:0] ins, rd2, wb;
+    //all the instantiation lines so its fully automated!
+
+    output [31:0] ins, rd2, wb;     //doesnt actually need output since program changes regs and mem but used for testing
     input [31:0] entryPoint;
     input INT, clk;
 
